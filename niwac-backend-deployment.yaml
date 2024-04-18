@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: niwac-backend
+    app.kubernetes.io/instance: niwac-backend-instance
+    app.kubernetes.io/version: '1.0.0'
+    app.kubernetes.io/managed-by: kubectl
+  name: niwac-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: niwac-backend
+  template:
+    metadata:
+      labels:
+        app: niwac-backend
+    spec:
+      containers:
+        - image: ledger/niwac-backend:latest
+          imagePullPolicy: Always
+          name: niwac-backend
+          ports:
+            - containerPort: 8000
+      imagePullSecrets:
+        - name: regcred

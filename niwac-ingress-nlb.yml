@@ -1,0 +1,87 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: niwac-nlb-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "CF-IPCountry: $http_cf_ipcountry";
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+spec:
+  tls:
+    - hosts:
+      - "www.niwac.cn"
+      secretName: www.niwac.cn-tls
+    - hosts:
+      - "niwac.cn"
+      secretName: niwac.cn-tls
+    - hosts:
+      - "hiwac.cn"
+      secretName: hiwac.cn-tls
+    - hosts:
+      - "www.hiwac.cn"
+      secretName: www.hiwac.cn-tls
+    - hosts:
+      - "api.niwac.cn"
+      secretName: api.niwac.cn-tls
+  ingressClassName: "nginx"
+  rules:
+
+  - host: "niwac.cn"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: niwac-frontend
+            port:
+              number: 80
+
+  - host: "www.niwac.cn"
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: niwac-frontend
+            port: 
+              number: 80
+
+  - host: "hiwac.cn"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: hiwac-frontend
+            port:
+              number: 80
+
+  - host: "www.hiwac.cn"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: hiwac-frontend
+            port:
+              number: 80
+
+  - host: "api.niwac.cn"
+    http:
+      paths:
+      - path: "/"
+        pathType: Prefix
+        backend:
+          service:
+            name: niwac-backend
+            port: 
+              number: 80

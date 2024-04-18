@@ -1,0 +1,36 @@
+apiVersion: cloud.tencent.com/v1alpha1
+kind: TkeServiceConfig
+metadata:
+ name: niwac-ingress-config
+ namespace: default
+spec:
+ loadBalancer:
+   l7Listeners:
+   - protocol: HTTP
+     port: 80
+     domains:
+     - domain: ""     # When `domain` is null, the VIP is used as the domain name
+       rules:
+       - url: "/"
+         forwardType: HTTP # Specifies HTTP as the backend protocol
+         healthCheck:
+           enable: false
+   - protocol: HTTPS
+     port: 443
+     domains:
+     - domain: "niwac.cn"
+       rules:
+       - url: "/"
+         forwardType: HTTPS # Specifies HTTPS as the backend protocol
+         session:
+           enable: true
+           sessionExpireTime: 3600
+         healthCheck:
+           enable: true
+           intervalTime: 10
+           healthNum: 2
+           unHealthNum: 2
+           httpCheckPath: "/"
+           httpCheckDomain: "niwac.cn"
+           httpCheckMethod: HEAD
+         scheduler: WRR

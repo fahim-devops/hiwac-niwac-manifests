@@ -1,0 +1,15 @@
+# serverless.yml
+component: postgresql # Name of the imported component, which is required. The `postgresql` component is used in this example
+name: serverlessDB # Name of the instance created by this component, which is required
+org: niwac-db # Organization information, which is optional. The default value is the `appid` of your Tencent Cloud account
+app: serverlessDB # SQL application name, which is optional
+stage: dev # Information for identifying environment, which is optional. The default value is `dev`
+
+inputs:
+  region: ap-guangzhou  # Valid values: ap-guangzhou, ap-shanghai, ap-beijing
+  zone: ap-guangzhou-2  # Valid values: ap-guangzhou-2, ap-shanghai-2, ap-beijing-3
+  dBInstanceName: serverlessDB
+  vpcConfig:
+    vpcId: vpc-4sitwsqv
+    subnetId: subnet-il8a5jve
+  extranetAccess: true

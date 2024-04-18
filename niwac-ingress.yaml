@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: qcloud ## Options: qcloud (CLB-type Ingress), nginx (nginx-ingress), traefik
+    #kubernetes.io/ingress.existLbId: lb-pp6hbluq  ## Specify an existing load balancer to be used to create the Ingress for public/private network access.
+    kubernetes.io/ingress.internetChargeType: TRAFFIC_POSTPAID_BY_HOUR
+    kubernetes.io/scheme: internet-facing
+    kubernetes.io/ingress.internetMaxBandwidthOut: "100"
+    #kubernetes.io/backend-protocol: "HTTP"
+    #kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+    #ingress.cloud.tencent.com/tke-service-config: niwac-ingress-config
+    #cert-manager.io/issuer: prod-issuer
+    #cert-manager.io/issuer-kind: OriginIssuer
+    #cert-manager.io/issuer-group: cert-manager.k8s.cloudflare.com
+
+    ## kubernetes.io/ingress.subnetId: subnet-xxxxxxxx  ## If you are creating a CLB-type private network Ingress, you need to specify this annotation.
+  name: niwac-ingress
+
+spec:
+  tls:
+  - hosts:
+    - backend.niwac.cn
+    secretName: niwac-backend-cert
+  - hosts:
+    - frontend.niwac.cn
+    secretName: niwac-frontend-cert
+  rules:
+  - host: frontend.niwac.cn
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: niwac-frontend
+            port: 
+              number: 80
+  - host: backend.niwac.cn
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: niwac-backend
+            port: 
+              number: 80

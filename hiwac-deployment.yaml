@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: hiwac-frontend
+    app.kubernetes.io/instance: hiwac-frontend-instance
+    app.kubernetes.io/version: '1.0.0'
+    app.kubernetes.io/managed-by: kubectl
+  name: hiwac-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hiwac-frontend
+  template:
+    metadata:
+      labels:
+        app: hiwac-frontend
+    spec:
+      containers:
+        - image: hh/frontend-ch:latest
+          imagePullPolicy: Always
+          name: hiwac-frontend
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: regcred-hiwac

@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: www.niwac.cn-tls
+  namespace: default
+spec:
+  dnsNames:
+    - www.niwac.cn
+  secretName: www.niwac.cn-tls
+  issuerRef:
+    name: letsencrypt-cluster-issuer
+    kind: ClusterIssuer
